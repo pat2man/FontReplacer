@@ -12,6 +12,9 @@
 @implementation UIFont (Replacement)
 
 static NSDictionary *replacementDictionary = nil;
+static NSString *systemFontName = @"Helvetica";
+static NSString *boldSystemFontName = @"Helvetica-Bold";
+static NSString *italicSystemFontName = @"Helvetica-Italic";
 
 static void initializeReplacementFonts()
 {
@@ -27,14 +30,42 @@ static void initializeReplacementFonts()
 + (void) load
 {
 	Method fontWithName_size_ = class_getClassMethod([UIFont class], @selector(fontWithName:size:));
+	Method systemFontOfSize_ = class_getClassMethod([UIFont class], @selector(systemFontOfSize:));
+	Method boldSystemFontOfSize_ = class_getClassMethod([UIFont class], @selector(boldSystemFontOfSize:));
+	Method italicSystemFontOfSize_ = class_getClassMethod([UIFont class], @selector(italicSystemFontOfSize:));
 	Method fontWithName_size_traits_ = class_getClassMethod([UIFont class], @selector(fontWithName:size:traits:));
 	Method replacementFontWithName_size_ = class_getClassMethod([UIFont class], @selector(replacement_fontWithName:size:));
 	Method replacementFontWithName_size_traits_ = class_getClassMethod([UIFont class], @selector(replacement_fontWithName:size:traits:));
-	
+	Method replacementSystemFontOfSize_ = class_getClassMethod([UIFont class], @selector(replacement_systemFontOfSize:));
+	Method replacementBoldSystemFontOfSize_ = class_getClassMethod([UIFont class], @selector(replacement_boldSystemFontOfSize:));
+	Method replacementItalicSystemFontOfSize_ = class_getClassMethod([UIFont class], @selector(replacement_italicSystemFontOfSize:));
+
 	if (fontWithName_size_ && replacementFontWithName_size_ && strcmp(method_getTypeEncoding(fontWithName_size_), method_getTypeEncoding(replacementFontWithName_size_)) == 0)
 		method_exchangeImplementations(fontWithName_size_, replacementFontWithName_size_);
 	if (fontWithName_size_traits_ && replacementFontWithName_size_traits_ && strcmp(method_getTypeEncoding(fontWithName_size_traits_), method_getTypeEncoding(replacementFontWithName_size_traits_)) == 0)
 		method_exchangeImplementations(fontWithName_size_traits_, replacementFontWithName_size_traits_);
+
+    if (systemFontOfSize_ && replacementSystemFontOfSize_ && strcmp(method_getTypeEncoding(systemFontOfSize_), method_getTypeEncoding(replacementSystemFontOfSize_)) == 0)
+		method_exchangeImplementations(systemFontOfSize_, replacementSystemFontOfSize_);
+    if (boldSystemFontOfSize_ && replacementBoldSystemFontOfSize_ && strcmp(method_getTypeEncoding(boldSystemFontOfSize_), method_getTypeEncoding(replacementBoldSystemFontOfSize_)) == 0)
+		method_exchangeImplementations(boldSystemFontOfSize_, replacementBoldSystemFontOfSize_);
+    if (italicSystemFontOfSize_ && replacementItalicSystemFontOfSize_ && strcmp(method_getTypeEncoding(italicSystemFontOfSize_), method_getTypeEncoding(replacementItalicSystemFontOfSize_)) == 0)
+		method_exchangeImplementations(italicSystemFontOfSize_, replacementItalicSystemFontOfSize_);
+}
+
++ (UIFont *) replacement_systemFontOfSize:(CGFloat)fontSize
+{
+    return [self replacement_fontWithName:systemFontName size:fontSize];
+}
+
++ (UIFont *) replacement_boldSystemFontOfSize:(CGFloat)fontSize
+{
+    return [self replacement_fontWithName:boldSystemFontName size:fontSize];
+}
+
++ (UIFont *) replacement_italicSystemFontOfSize:(CGFloat)fontSize
+{
+    return [self replacement_fontWithName:italicSystemFontName size:fontSize];
 }
 
 + (UIFont *) replacement_fontWithName:(NSString *)fontName size:(CGFloat)fontSize
